@@ -76,3 +76,5 @@ Editing code:
 In a Linux environment, you can edit with emacs, vi, or pico (the first two are powerful and used by professional programmers all over the world, while the latter is simple and used by undergraduate computer science students with tunnel vision all over the world).  In some other environment, mount your U drive, save your program there, and edit with your favorite tool, whatever it may be.  You'll be able to log into pyrite in a terminal and run your program there while editing locally.
 
 Link to the LEGv8 reference sheet: https://www.usna.edu/Users/cs/lmcdowel/courses/ic220/S20/resources/ARM-v8-Quick-Reference-Guide.pdf
+
+TEST TEST
