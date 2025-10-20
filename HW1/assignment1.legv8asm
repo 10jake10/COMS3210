@@ -4,7 +4,23 @@ main:
 SUBI SP, SP, #200    //Space for 25 ints
 // PRNT SP //test
 ADD X0, SP, XZR
-ADDI X1, XZR, #25
+//ADDI X1, XZR, #25
+ADDI X1, XZR, #2
+//BL fill
+
+//ADD X0, SP, XZR
+//ADDI X1, XZR, #25
+ADDI X9, XZR, #1
+STUR X9, [X0, #0]
+
+ADDI X9, XZR, #2
+STUR X9, [X0, #8]
+
+//Calling sorted
+BL issorted
+//PRNT X0
+//DEBUG
+HALT
 
 fill:  //X0=*a, X1=n
 SUBI X9, X1, #1  //X9 = i = n-1
@@ -21,9 +37,53 @@ STUR X9, [X10, #0] //a[n-1-i] = i
 SUBIS X9, X9, #1 //i--
 B.GE top
 
+//end:
+BR LR
+
+
+issorted:
+// x0 is a pointer to array a
+// x1 is the number of elements
+
+//Declaring n and setting it to 1
+ADDI X9, XZR, #1
+//PRNT X9
+
+loop:
+SUBS XZR, X9, X1
+B.GE sorted
+
+
+//Calculating the offsets
+//gettin A[i] stored in X11
+LSL X10, X9, #3 //multiply by 8 for the offset
+ADD X10, X0, X10 //Recording the memory address
+LDUR X11, [X10, #0] //Loading the value
+
+//getting A[i -1] stored in X14
+SUBI X12, X9, #1
+LSL X13, X12, #3
+ADD X13, X0, X13
+LDUR X14, [X13, #0] //Loading the value
+
+//SUBS XZR, X11, X14
+SUBS XZR, X11, X14
+B.LT unsorted
+
+
+ADDI X9, X9, #1
+B loop
+
+//Returning 0 or 1
+
 end:
-// BR LR
 
+sorted:
 
+ADDI X0, XZR, #0
+BR LR
 
+unsorted:
+ADDI X0, XZR, #1
+BR LR
 
