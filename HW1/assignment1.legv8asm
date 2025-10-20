@@ -41,6 +41,43 @@ B.GE top
 BR LR
 
 
+maxIndex:
+//X0 is array pointer
+//X1 is n parameters
+//X2 is m parameters
+
+//X0 is return value
+
+//A[n]
+//shiftAmount = n * 8 for offset
+//declaring n
+LSL X9, X1, #3 //offset, remember what X1 is(Sean)
+ADD X9, X0, X9 //adding Shift amount
+LDUR X10, [X9, #0] //Loading the array value
+
+//X10 = A[n]
+
+
+//A[m] // exactly the same
+LSL X11, X2, #3 //offset X11 = m * 8
+ADD X11, X0, X11 X11 = arrayPointer + offset
+LDUR X12, [X11, #0]
+//X12 = a[m]
+
+// if a[n] > a[m]: return n else return m
+SUBS XZR, X10, X12
+B.GT greater_case
+
+
+ADD X0, X2, XZR // returning m
+BR LR
+
+greater_case:
+ADD X0, X1, XZR// returning n
+BR LR
+
+
+
 issorted:
 // x0 is a pointer to array a
 // x1 is the number of elements
