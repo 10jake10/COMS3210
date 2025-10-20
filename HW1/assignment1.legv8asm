@@ -60,7 +60,7 @@ LDUR X10, [X9, #0] //Loading the array value
 
 //A[m] // exactly the same
 LSL X11, X2, #3 //offset X11 = m * 8
-ADD X11, X0, X11 X11 = arrayPointer + offset
+ADD X11, X0, X11 //X11 = arrayPointer + offset
 LDUR X12, [X11, #0]
 //X12 = a[m]
 
@@ -112,15 +112,90 @@ ADDI X9, X9, #1
 B loop
 
 //Returning 0 or 1
+//@Sean I am reversing your outputs here so sorted=1 and unsorted=0 as is described in the piazza post
 
 end:
 
 sorted:
 
-ADDI X0, XZR, #0
-BR LR
-
-unsorted:
 ADDI X0, XZR, #1
 BR LR
 
+unsorted:
+ADDI X0, XZR, #0
+BR LR
+
+
+swap:
+// X0 is address of a
+// X1 is index i
+// X2 is index j
+// X9 will be temp register
+
+LSL X1, X1, #3 //X1 *= 8
+ADD X1, X1, X0  //X1 += &a = &a[i]
+
+LSL X2, X2, #3 //X2 *= 8
+ADD X2, X2, X0  //X2 += &a = &a[j]
+LDUR X10, [X2, #0] //X10 = a[j]
+
+LDUR X9, [X1, #0] //tmp = a[i]
+STUR X10, [X1, #0] //a[i] = a[j];
+STUR X9, [X2, #0] //a[j] = tmp;
+BR LR
+
+
+
+find_largest:
+// X0 is address of a
+// X1 is start
+// X2 is size
+
+//if size==1, return
+SUBIS XZR, X2, #1
+B.EQ basecase
+
+//Save LR, X0, X1, X2 in stack
+SUBI SP, SP, #40
+STUR LR, [SP, #0]
+STUR X0, [SP, #8]
+STUR X1, [SP, #16]
+STUR X2, [SP, #24]
+
+// compute find_largest(a, start, size / 2) and save values in stack
+// temp X9 = size/2
+LSR X2, X2, #1
+BL find_largest
+//save return value of first find_largest recursive call to stack
+STUR X0, [SP, #32]
+
+//Load arguments for second find_largest recursive call
+LDUR X0, [SP, #8]
+//temp X9 = start
+//temp X10 = size
+LDUR X9, [SP, #16]
+LDUR X10, [SP, #24]
+//X1 = start + size/2
+LSR X1, X10, #1
+ADD X1, X1, X9
+//X2 = (size+1)/2
+ADDI X2, X10, #1
+LSR X2, X2, #1
+BL find_largest
+
+//Load arguments for max-index call
+ADD X2, X0, XZR //third argument is result of second recursive call
+LDUR X1, [SP, #32] //second argument is result of first recursive call
+LDUR X0, [SP, #8] //first argument is stored address of a
+BL maxIndex
+
+//the result of the previous function call is our return value, so it can stay in X0
+
+// restore LR and pop stack
+LDUR LR, [SP, #0]
+ADDI SP, SP, #40
+BR LR
+
+basecase:
+ADD X0, X1, XZR //return start
+BR LR
