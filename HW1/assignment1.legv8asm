@@ -1,27 +1,24 @@
 // /share/cs321/legv8emul assignment1.legv8asm
 
 main:
-SUBI SP, SP, #200    //Space for 25 ints
-// PRNT SP //test
+SUBI SP, SP, #200
 ADD X0, SP, XZR
-//ADDI X1, XZR, #25
-ADDI X1, XZR, #2
-//BL fill
+ADDI X1, XZR, #25
+BL fill
 
-//ADD X0, SP, XZR
-//ADDI X1, XZR, #25
-ADDI X9, XZR, #1
-STUR X9, [X0, #0]
-
-ADDI X9, XZR, #2
-STUR X9, [X0, #8]
-
-//Calling sorted
+ADD X0, SP, XZR
+ADDI X1, XZR, #25
 BL issorted
-//PRNT X0
-//DEBUG
+PRNT X0   //this is correctly printing 0 because the array is not yet sorted
+
+ADD X0, SP, XZR
+ADDI X1, XZR, #6  //this value is where the find_largest function starts its search, and should therefore be the return value (because the array is backwards sorted for now). It seems to work
+ADDI X2, XZR, #25
+BL find_largest
+PRNT X0
 HALT
 
+//------------------------------------------------------------------
 fill:  //X0=*a, X1=n
 SUBI X9, X1, #1  //X9 = i = n-1
 top: 
@@ -36,11 +33,9 @@ STUR X9, [X10, #0] //a[n-1-i] = i
 
 SUBIS X9, X9, #1 //i--
 B.GE top
-
-//end:
 BR LR
 
-
+//--------------------------------------------------------------------
 maxIndex:
 //X0 is array pointer
 //X1 is n parameters
@@ -77,7 +72,7 @@ ADD X0, X1, XZR// returning n
 BR LR
 
 
-
+//-------------------------------------------------------------------------
 issorted:
 // x0 is a pointer to array a
 // x1 is the number of elements
@@ -125,7 +120,7 @@ unsorted:
 ADDI X0, XZR, #0
 BR LR
 
-
+//----------------------------------------------------------------------
 swap:
 // X0 is address of a
 // X1 is index i
@@ -145,7 +140,7 @@ STUR X9, [X2, #0] //a[j] = tmp;
 BR LR
 
 
-
+//-------------------------------------------------------------------------
 find_largest:
 // X0 is address of a
 // X1 is start
