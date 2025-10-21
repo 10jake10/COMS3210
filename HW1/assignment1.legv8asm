@@ -1,5 +1,10 @@
+//Sean Fjellman    NetID: fjellman
+//Jake Ebersole    NetID: jake001
+
 // /share/cs321/legv8emul assignment1.legv8asm
 
+
+//We are using an array size of 25
 main:
 SUBI SP, SP, #200
 ADD X0, SP, XZR
@@ -12,10 +17,15 @@ BL issorted
 PRNT X0   //this is correctly printing 0 because the array is not yet sorted
 
 ADD X0, SP, XZR
-ADDI X1, XZR, #6  //this value is where the find_largest function starts its search, and should therefore be the return value (because the array is backwards sorted for now). It seems to work
-ADDI X2, XZR, #25
-BL find_largest
-PRNT X0
+ADDI X1, XZR, #25
+BL stoopid_sort
+
+ADD X0, SP, XZR
+ADDI X1, XZR, #25
+BL issorted
+PRNT X0 //now this should print 1 because we have sorted
+
+ADD X0, XZR, XZR //The C-program returns 0 wo we can too i guess
 HALT
 
 //------------------------------------------------------------------
@@ -194,3 +204,58 @@ BR LR
 basecase:
 ADD X0, X1, XZR //return start
 BR LR
+
+//----------------------------------------------------------------------------------
+stoopid_sort:
+// X0 is address of a
+// X1 is size
+// X9 is i
+// X10 and X11 are temps
+
+ADD X9, XZR, XZR //i = 0
+
+//store LR, a, size, i in stack
+SUBI SP, SP, #32
+STUR LR, [SP, #0]
+STUR X0, [SP, #8]
+STUR X1, [SP, #16]
+STUR X9, [SP, #24]
+
+stoopid_sort_loop:
+
+LDUR X9, [SP, #24] // X9 = i
+LDUR X10, [SP, #16] //X10 = size
+//Check loop condition
+SUBI X11, X10, #1  //X11 = size-1
+SUBS XZR, X9, X11
+B.GE stoopid_sort_end
+
+// Load find_largest arguments in
+LDUR X0, [SP, #8] //first arg is a
+ADD X1, XZR, XZR   //second arg is zero
+SUB X2, X10, X9  //third arg is size - i
+BL find_largest
+
+//Load arguments for swap
+ADD X1, X0, XZR  //second arg is result of find_largest
+LDUR X0, [SP, #8] //first arg is a
+LDUR X9, [SP, #24] //third arg is size-i-1
+LDUR X2, [SP, #16] 
+SUB X2, X2, X9
+SUBI X2, X2, #1
+BL swap
+
+//increment and store i
+LDUR X9, [SP, #24]
+ADDI X9, X9, #1
+STUR X9, [SP, #24]
+
+//loop
+B stoopid_sort_loop
+
+stoopid_sort_end:
+//restore LR and pop stack
+LDUR LR, [SP, #0]
+ADDI SP, SP, #32
+BR LR
+
