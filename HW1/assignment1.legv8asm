@@ -4,29 +4,33 @@
 // /share/cs321/legv8emul assignment1.legv8asm
 
 
-//We are using an array size of 25
 main:
-SUBI SP, SP, #200
-ADD X0, SP, XZR
-ADDI X1, XZR, #25
-BL fill
+    // Set up array pointer and size
+    ADD  X0, XZR, XZR      // X0 = 0 base address in main memory
+    ADDI X1, XZR, #25      // X1 = 25 array size
+    BL   fill              // fill(a, n)
 
-ADD X0, SP, XZR
-ADDI X1, XZR, #25
-BL issorted
-PRNT X0   //this is correctly printing 0 because the array is not yet sorted
+    // Check if array is sorted (should print 0)
+    ADD  X0, XZR, XZR
+    ADDI X1, XZR, #25
+    BL   issorted
+    PRNT X0                // Expect 0
 
-ADD X0, SP, XZR
-ADDI X1, XZR, #25
-BL stoopid_sort
+    // Sort the array
+    ADD  X0, XZR, XZR
+    ADDI X1, XZR, #25
+    BL   stoopid_sort
 
-ADD X0, SP, XZR
-ADDI X1, XZR, #25
-BL issorted
-PRNT X0 //now this should print 1 because we have sorted
+    // Check again if sorted (should print 1)
+    ADD  X0, XZR, XZR
+    ADDI X1, XZR, #25
+    BL   issorted
+    PRNT X0                // Expect 1
 
-ADD X0, XZR, XZR //The C-program returns 0 wo we can too i guess
-HALT
+    // Exit
+    ADD  X0, XZR, XZR
+    //HALT
+    B end
 
 //------------------------------------------------------------------
 fill:  //X0=*a, X1=n
@@ -259,3 +263,5 @@ LDUR LR, [SP, #0]
 ADDI SP, SP, #32
 BR LR
 
+end:
+    //DUMP

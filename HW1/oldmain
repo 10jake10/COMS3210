@@ -1,0 +1,22 @@
+main:
+SUBI SP, SP, #200
+ADD X0, SP, XZR
+ADDI X1, XZR, #25
+BL fill
+
+ADD X0, SP, XZR
+ADDI X1, XZR, #25
+BL issorted
+PRNT X0   //this is correctly printing 0 because the array is not yet sorted
+
+ADD X0, SP, XZR
+ADDI X1, XZR, #25
+BL stoopid_sort
+
+ADD X0, SP, XZR
+ADDI X1, XZR, #25
+BL issorted
+PRNT X0 //now this should print 1 because we have sorted
+
+ADD X0, XZR, XZR //The C-program returns 0 wo we can too i guess
+HALT
