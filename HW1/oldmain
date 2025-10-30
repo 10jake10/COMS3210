@@ -20,3 +20,18 @@ PRNT X0 //now this should print 1 because we have sorted
 
 ADD X0, XZR, XZR //The C-program returns 0 wo we can too i guess
 HALT
+
+
+Functions to Check:
+
+swap(int *a, int i, int j) // Done
+
+max_index(int *a, int n, int m) //Done
+
+find_largest(int *a, int start, int size) //Done
+
+stoopid_sort(int *a, int size) // Done
+
+fill(int *a, int n) //Works tested in other functions
+
+is_sorted(int *a, int size) //Done
