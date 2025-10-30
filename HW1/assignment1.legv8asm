@@ -5,32 +5,69 @@
 
 
 main:
-    // Set up array pointer and size
-    ADD  X0, XZR, XZR      // X0 = 0 base address in main memory
-    ADDI X1, XZR, #25      // X1 = 25 array size
-    BL   fill              // fill(a, n)
+    
+// Set up array pointer and size
+ADD  X0, XZR, XZR      // X0 = 0 base address in main memory
+ADDI X1, XZR, #512      // X1 = 25 array size
+BL   fill              // fill(a, n)
 
-    // Check if array is sorted (should print 0)
-    ADD  X0, XZR, XZR
-    ADDI X1, XZR, #25
-    BL   issorted
-    PRNT X0                // Expect 0
+// Check if array is sorted (should print 0)
+ADD  X0, XZR, XZR
+ADDI X1, XZR, #512
+BL   issorted
+PRNT X0                // Expect 0
 
-    // Sort the array
-    ADD  X0, XZR, XZR
-    ADDI X1, XZR, #25
-    BL   stoopid_sort
+// Sort the array
+ADD  X0, XZR, XZR
+ADDI X1, XZR, #512
+BL   stoopid_sort
 
-    // Check again if sorted (should print 1)
-    ADD  X0, XZR, XZR
-    ADDI X1, XZR, #25
-    BL   issorted
-    PRNT X0                // Expect 1
+// Check again if sorted (should print 1)
+ADD  X0, XZR, XZR
+ADDI X1, XZR, #512
+BL   issorted
+PRNT X0                // Expect 1
 
-    // Exit
-    ADD  X0, XZR, XZR
-    //HALT
-    B end
+// Exit
+ADD  X0, XZR, XZR
+//HALT
+
+BL  testSwap
+B endProgram //ending the program by branching to the end
+
+
+//------------------------------------------------------------------
+testSwap:
+SUBI SP, SP, #16
+STUR LR, [SP, #0]
+
+//Testing swap
+ADD  X0, XZR, XZR      // X0 = 0 base address in main memory
+ADDI X1, XZR, #5      // X1 = 25 array size
+BL   fill              // fill(a, n)
+
+//LOADING VALS before
+LDUR X9, [X0, #0] // i = x9[0]
+PRNT X9
+LDUR X10, [X0, #24] // j = X10[3]
+PRNT X10
+
+//Swap x[0] and x[3]
+ADDI X1, XZR, #0
+ADDI X2, XZR, #3
+
+BL swap
+LDUR X9, [X0, #0] // i = x9[0]
+PRNT X9
+LDUR X10, [X0, #24] // j = X10[3]
+PRNT X10
+
+
+LDUR LR, [SP, #0]
+ADDI SP, SP, #16
+
+BR LR
+
 
 //------------------------------------------------------------------
 fill:  //X0=*a, X1=n
@@ -263,5 +300,6 @@ LDUR LR, [SP, #0]
 ADDI SP, SP, #32
 BR LR
 
-end:
+endProgram:
+    //HALT
     //DUMP
