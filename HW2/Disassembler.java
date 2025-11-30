@@ -53,10 +53,133 @@ public class Disassembler {
                 mov_i = (binary >>> 5) & 0xFFFF;
                 // System.out.println(Integer.toBinaryString(rm));
 
+                /*
+                //Eleven Bit opcodes
                 if(opcode11 == 0b10001011000){ 
+                    //Add
                     result.add(String.format("ADD X%d, X%d, X%d", rd, rn, rm) );
                 }
+                    */
 
+
+                switch(opcode11)
+                {
+                    //Add
+                    case 0b10001011000:
+                        result.add(String.format("ADD X%d, X%d, X%d", rd, rn, rm) );
+                    break;
+
+                    case 0b11001011000:
+                        //sub
+                    break;
+
+                    case 0b11101011000:
+                        //subs
+                    break;
+
+                    case 0b10001010000:
+                        // And
+                    break;
+
+                    case 0b10101010000:
+                        //Or
+                    break;
+
+                    case 0b11001010000:
+                        //EOr
+                    break;
+
+                    case 0b10011011000:
+                        //Mul
+                    break;
+
+                    case 0b11010011011:
+                        //LSL
+                    break;
+
+                    case 0b11010011010:
+                        //LSR
+                    break;
+
+                    case 0b11111111101:
+                        //PRNT
+                    break;
+
+                    case 0b11111111100:
+                        //PRNL
+                    break;
+
+                    case 0b11111111110:
+                        //DUMP
+                    break;
+
+                    case 0b11111111111:
+                        //HALT
+                    break;
+
+                    case 0b11010110000:
+                        //BR
+                    break;
+
+                    case 0b11111000010:
+                        //LDUR
+                    break;
+
+                    case 0b11111000000:
+                        //STUR
+                    break;
+                }
+                
+                switch(opcode10)
+                {
+                    case 0b1001000100:
+                        //ADDI
+                    break;
+
+                    case 0b1001001000:
+                        //ANDI
+                    break;
+
+                    case 0b1011001000:
+                        //ORRI
+                    break;
+
+                    case 0b1101001000:
+                        //EORI
+                    break;
+
+                    case 0b1101000100:
+                        //SUBI
+                    break;
+
+                    case 0b1111000100:
+                        //SUBIS
+                    break;
+                }
+
+                switch (opcode8) {
+                    case 0b10110100:
+                        //CBZ    
+                    break;
+
+                    case 0b10110101:
+                        //CBNZ
+                    break;
+
+                    case 0b01010100:
+                        //B.cond
+                    break;
+                }
+
+                switch (opcode6) {
+                    case 0b000101:
+                        //Branch    
+                    break;
+
+                    case 0b100101:
+                        //BL
+                    break;
+                }
                 
             }
 

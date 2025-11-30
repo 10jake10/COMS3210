@@ -54,3 +54,35 @@ instruction_t instruction[] = {
   { "UDIV",    UDIV_inst,   0b10011010110 },
   { "UMULH",   UMULH_inst,  0b10011011110 }
 };
+
+--------------------------------------------
+11 Bit: 
+
+R type
+
+ADD, SUB,SUBS AND, ORR, EOR, MUL, LSL, 
+LSR, PRNT, PRNL, DUMP, HALT, BR
+
+D type
+
+LDUR, STUR
+
+
+
+--------------------------------------------
+
+10 Bit: I type
+
+ADDI, ANDI, ORRI, EORI, SUBI, SUBIS
+
+--------------------------------------------
+
+6 bit: B type
+
+B, BL
+
+--------------------------------------------
+
+8 bit: CB-type
+
+CBZ, CBNZ, B.cond
