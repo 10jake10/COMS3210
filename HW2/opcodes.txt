@@ -63,6 +63,11 @@ R type
 ADD, SUB,SUBS AND, ORR, EOR, MUL, LSL, 
 LSR, PRNT, PRNL, DUMP, HALT, BR
 
+OP Xd, Xn, Xm
+
+
+command 
+
 D type
 
 LDUR, STUR

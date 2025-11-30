@@ -158,13 +158,13 @@ public class Disassembler {
                     case 0b1001000100: {
                         //ADDI
                         int imm12 = signExtend(alu_i, 12);
-                        result.add(String.format("ADDI X%d, X%d, X%d", rd, rn, imm12));
+                        result.add(String.format("ADDI X%d, X%d, #%d", rd, rn, imm12));
                     break; 
                 }
 
                     case 0b1001001000:{
                         //ANDI
-                        result.add(String.format("ANDI X%d, X%d, X%d", rd, rn, alu_i));
+                        result.add(String.format("ANDI X%d, X%d, #%d", rd, rn, alu_i));
                     break;
                     }
 
@@ -184,14 +184,14 @@ public class Disassembler {
                     case 0b1101000100: {
                         //SUBI
                         int imm12 = signExtend(alu_i, 12);
-                        result.add(String.format("SUBI X%d, X%d, X%d", rd, rn, imm12));
+                        result.add(String.format("SUBI X%d, X%d, #%d", rd, rn, imm12));
                     break;
                     }
 
                     case 0b1111000100: {
                         //SUBIS
                         int imm12 = signExtend(alu_i, 12);
-                        result.add(String.format("SUBIS X%d, X%d, X%d", rd, rn, imm12));
+                        result.add(String.format("SUBIS X%d, X%d, #%d", rd, rn, imm12));
                     break;
                     }
                 }
