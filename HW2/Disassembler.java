@@ -1,7 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Disassembler {
@@ -26,7 +28,10 @@ public class Disassembler {
         // binary = 0b11001101110011000011011000100101;
 
         List<String> result = new ArrayList<String>();
-        int count = 0;
+        int count = -1;
+
+        Map<Integer, Integer> branches = new HashMap<Integer, Integer>(); // branch from location : branch to location
+        Map<Integer, String> labelNames = new HashMap<Integer, String>(); // branch to location : label name
 
         try (Scanner scanner = new Scanner(new File("test.txt"))) {
 
@@ -54,211 +59,236 @@ public class Disassembler {
                 // System.out.println(Integer.toBinaryString(rm));
 
                 /*
-                //Eleven Bit opcodes
-                if(opcode11 == 0b10001011000){ 
-                    //Add
-                    result.add(String.format("ADD X%d, X%d, X%d", rd, rn, rm) );
-                }
-                    */
+                 * //Eleven Bit opcodes
+                 * if(opcode11 == 0b10001011000){
+                 * //Add
+                 * result.add(String.format("ADD X%d, X%d, X%d", rd, rn, rm) );
+                 * }
+                 */
 
+                // Reference sheet cause I cant remember a thing
+                /* https://booksite.elsevier.com/9780128017333/content/Green%20Card.pdf */
 
-                //Reference sheet cause I cant remember a thing
-                /*https://booksite.elsevier.com/9780128017333/content/Green%20Card.pdf */
-
-               // Most R types: OP Xd, Xn, Xm
-                switch(opcode11)
-                {
-                    //Add
+                // Most R types: OP Xd, Xn, Xm
+                switch (opcode11) {
+                    // Add
                     case 0b10001011000:
-                        result.add(String.format("ADD X%d, X%d, X%d", rd, rn, rm) );
-                    break;
+                        result.add(String.format("ADD X%d, X%d, X%d", rd, rn, rm));
+                        break;
 
                     case 0b11001011000:
-                        //sub
+                        // sub
                         result.add(String.format("SUB X%d, X%d, X%d", rd, rn, rm));
-                    break;
+                        break;
 
                     case 0b11101011000:
-                        //subs
+                        // subs
                         result.add(String.format("SUBS X%d, X%d, X%d", rd, rn, rm));
-                    break;
+                        break;
 
                     case 0b10001010000:
                         // And
                         result.add(String.format("AND X%d, X%d, X%d", rd, rn, rm));
-                    break;
+                        break;
 
                     case 0b10101010000:
-                        //Or
+                        // Or
                         result.add(String.format("ORR X%d, X%d, X%d", rd, rn, rm));
-                    break;
+                        break;
 
                     case 0b11001010000:
-                        //EOr
+                        // EOr
                         result.add(String.format("EOR X%d, X%d, X%d", rd, rn, rm));
-                    break;
+                        break;
 
                     case 0b10011011000:
-                        //Mul
+                        // Mul
                         result.add(String.format("MUL X%d, X%d, X%d", rd, rn, rm));
-                    break;
+                        break;
 
                     case 0b11010011011:
-                        //LSL
+                        // LSL
                         result.add(String.format("LSL X%d, X%d, #%d", rd, rn, shamt));
-                    break;
+                        break;
 
                     case 0b11010011010:
-                        //LSR
+                        // LSR
                         result.add(String.format("LSR X%d, X%d, #%d", rd, rn, shamt));
-                    break;
+                        break;
 
                     case 0b11111111101:
-                        //PRNT
+                        // PRNT
                         result.add(String.format("PRNT X%d", rd));
-                    break;
+                        break;
 
                     case 0b11111111100:
-                        //PRNL
+                        // PRNL
                         result.add("PRNL");
-                    break;
+                        break;
 
                     case 0b11111111110:
-                        //DUMP
+                        // DUMP
                         result.add(String.format("DUMP"));
-                    break;
+                        break;
 
                     case 0b11111111111:
-                        //HALT
+                        // HALT
                         result.add(String.format("HALT"));
-                    break;
+                        break;
 
                     case 0b11010110000:
-                        //BR
+                        // BR
                         result.add(String.format("BR X%d", rn));
-                    break;
+                        break;
 
                     case 0b11111000010: {
-                        //LDUR
+                        // LDUR
                         int offsetLD = signExtend(dt_a, 9);
                         result.add(String.format("LDUR X%d, [X%d, #%d]", rd, rn, offsetLD));
-                    break;
+                        break;
                     }
 
                     case 0b11111000000: {
-                        //STUR
+                        // STUR
                         int offsetST = signExtend(dt_a, 9);
                         result.add(String.format("STUR X%d, [X%d, #%d]", rd, rn, offsetST));
-                    break;
+                        break;
                     }
                 }
-                
-                switch(opcode10)
-                {
+
+                switch (opcode10) {
                     case 0b1001000100: {
-                        //ADDI
+                        // ADDI
                         int imm12 = signExtend(alu_i, 12);
                         result.add(String.format("ADDI X%d, X%d, #%d", rd, rn, imm12));
-                    break; 
-                }
-
-                    case 0b1001001000:{
-                        //ANDI
-                        result.add(String.format("ANDI X%d, X%d, #%d", rd, rn, alu_i));
-                    break;
+                        break;
                     }
 
+                    case 0b1001001000: {
+                        // ANDI
+                        result.add(String.format("ANDI X%d, X%d, #%d", rd, rn, alu_i));
+                        break;
+                    }
 
                     case 0b1011001000: {
-                        //ORRI
+                        // ORRI
                         result.add(String.format("ORRI X%d, X%d, #%d", rd, rn, alu_i));
-                    break;
+                        break;
                     }
 
                     case 0b1101001000: {
-                        //EORI
+                        // EORI
                         result.add(String.format("EORI X%d, X%d, #%d", rd, rn, alu_i));
-                    break;
+                        break;
                     }
 
                     case 0b1101000100: {
-                        //SUBI
+                        // SUBI
                         int imm12 = signExtend(alu_i, 12);
                         result.add(String.format("SUBI X%d, X%d, #%d", rd, rn, imm12));
-                    break;
+                        break;
                     }
 
                     case 0b1111000100: {
-                        //SUBIS
+                        // SUBIS
                         int imm12 = signExtend(alu_i, 12);
                         result.add(String.format("SUBIS X%d, X%d, #%d", rd, rn, imm12));
-                    break;
+                        break;
                     }
                 }
 
                 switch (opcode8) {
                     case 0b10110100: {
-                        //CBZ
+                        // CBZ
                         int offset = signExtend(cond_br_a, 19);
-                        result.add(String.format("CBZ X%d, #%d", rd, offset));
-                    break;
+                        result.add(String.format("CBZ X%d, ", rd));
+                        branches.put(count, count + offset);
+                        break;
                     }
 
                     case 0b10110101: {
-                        //CBNZ
+                        // CBNZ
                         int offset = signExtend(cond_br_a, 19);
-                        result.add(String.format("CBNZ X%d, #%d", rd, offset));
-                    break;
+                        result.add(String.format("CBNZ X%d, ", rd));
+                        branches.put(count, count + offset);
+                        break;
                     }
 
                     case 0b01010100: {
-                        //B.cond
+                        // B.cond
                         int offset = signExtend(cond_br_a, 19);
-                            String[] condNames = {
-                                "EQ","NE","HS","LO","MI","PL","VS","VC",
-                                "HI","LS","GE","LT","GT","LE"
-                            };
-                        String cond = condNames[rd]; //rd is the index of the sign
-                        result.add(String.format("B.%s #%d", cond, offset));
-                    break;
+                        String[] condNames = {
+                                "EQ", "NE", "HS", "LO", "MI", "PL", "VS", "VC",
+                                "HI", "LS", "GE", "LT", "GT", "LE"
+                        };
+                        String cond = condNames[rd]; // rd is the index of the sign
+                        result.add(String.format("B.%s ", cond));
+                        branches.put(count, count + offset);
+                        break;
                     }
                 }
 
                 switch (opcode6) {
                     case 0b000101: {
-                        //Branch    
+                        // Branch
                         int offset = signExtend(br_a, 26);
-                        result.add(String.format("B #%d", offset));
-                    break;
+                        result.add("B ");
+                        branches.put(count, count + offset);
+                        break;
                     }
 
                     case 0b100101: {
-                        //BL
+                        // BL
                         int offset = signExtend(br_a, 26);
-                        result.add(String.format("BL #%d", offset));
-                    break;
+                        result.add("BL ");
+                        branches.put(count, count + offset);
+                        break;
                     }
                 }
-                
+
             }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        
-        for(String s : result)
-        {
-            System.out.println(s);
+
+        // for(String s : result)
+        // {
+        // System.out.println(s);
+        // }
+
+        int labelCount = 0;
+
+        for (int i = 0; i < result.size(); i++) {
+            if (branches.containsValue(i)) // if somewhere branches to here
+            {
+                if (!labelNames.containsKey(i))// if a label name not already determined for here
+                {
+                    labelNames.put(i, "label" + (++labelCount)); // create label name
+                }
+                System.out.println(labelNames.get(i) + ":"); // print out label name
+            }
+
+            System.out.print(result.get(i));
+
+            if (branches.containsKey(i)) // if current instruction is a branch instruction
+            {
+                if (!labelNames.containsKey(branches.get(i))) // if branch destination does not yet have a label name
+                {
+                    labelNames.put(branches.get(i), "label" + (++labelCount)); // create label name
+                }
+                System.out.print(labelNames.get(branches.get(i))); // print out destination label name
+            }
+
+            System.out.println(); // new line
         }
 
     }
-    
-    private static int signExtend(int value, int bits) 
-    {
+
+    private static int signExtend(int value, int bits) {
         int shift = 32 - bits;
         return (value << shift) >> shift;
     }
-
 
 }
